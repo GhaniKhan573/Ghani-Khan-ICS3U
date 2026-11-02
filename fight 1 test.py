@@ -176,7 +176,7 @@ while running:
 
    # 1. Create rectangle objects for both the player and the enemy
     player_rect = pygame.Rect(player_x, player_y, 50, 50)
-    tentical_rect = pygame.Rect(wall_x, wall_y, 30, 40)
+    tentical_rect = pygame.Rect(wall_x, wall_y + 30, 30, 40)
 
 
 
