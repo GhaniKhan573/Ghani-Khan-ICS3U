@@ -342,6 +342,7 @@ while running:
     pygame.draw.rect(screen, RED, player)
 
 
+    pygame.draw.rect(screen, RED, tentical_rect)
 
 
 
