@@ -1,4 +1,4 @@
-import pygame
+import pygame , random
 
 pygame.init()
 
@@ -9,10 +9,13 @@ pygame.init()
 
 #Moving Walls
 
-wall_x = 200  # Start off the right side of the screen
-wall_y = 300 
+wall_vx = 200  # Start off the right side of the screen
+wall_vy = 300 
+wall_hx = 300
+wall_hy = 200
 wall_speed = 2  # Pixels to move per frame
-
+wall_width = 80
+wall_height = 60
 
 
 
@@ -62,28 +65,57 @@ speed = 3
 
 
 
+
+    
+
+#random spawn function
+def spawn_wall():   
+    global wall_hx, wall_hy, wall_vx, wall_vy
+ 
+    # Pick a random side: 0 = Top, 1 = Bottom, 2 = Left, 3 = Right
+    side = random.randint(0, 3)
+    
+    if side == 0:  # Top (moving DOWN)
+        wall_hx = random.randint(0, SCREEN_WIDTH - wall_width)
+        wall_hy = -wall_height 
+        wall_vx = 0
+        wall_vy = wall_speed
+        
+    elif side == 1:  # Bottom (moving UP)
+        wall_hx = random.randint(0, SCREEN_WIDTH - wall_width)
+        wall_hy = SCREEN_HEIGHT 
+        wall_vx = 0
+        wall_vy = -wall_speed
+        
+    elif side == 2:  # Left (moving RIGHT)
+        wall_hx = -wall_width  
+        wall_hy = random.randint(0, SCREEN_HEIGHT - wall_height)
+        wall_vx = wall_speed
+        wall_vy = 0
+        
+    elif side == 3:  # Right (moving LEFT)
+        wall_hx = SCREEN_WIDTH 
+        wall_hy = random.randint(0, SCREEN_HEIGHT - wall_height)
+        wall_vx = -wall_speed
+        wall_vy = 0
+
+
+
+
+
+
+
+
+
 #walls function
 
 def check_collision(player, walls):
-    """
-    -------------------------------------------------------
-    -------------------------------------------------------
-    Parameters:
-       player - the rectangle representing the player (pygame.Rect)
-       walls - a list of rectangles representing the maze walls (list)
-    Returns:
-       collision - True if the player collides with a wall,
-                   False otherwise (bool)
-    -------------------------------------------------------
-    """
     for wall in walls:
         if player.colliderect(wall):
             return True
     return False
 
-# Set screen resolution
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 400
+
 
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -112,6 +144,7 @@ exit_rect = pygame.Rect(540, 340, 30, 30)
 
 
 # Create the maze walls
+"""
 walls = [
     pygame.Rect(100, 0, 20, 300),
     pygame.Rect(200, 100, 20, 300),
@@ -119,13 +152,9 @@ walls = [
     pygame.Rect(400, 100, 20, 300),
     pygame.Rect(500, 0, 20, 250)
 ]
+"""
 
 
-
-
-
-# Set up the game
-cexit_rect = pygame.Rect(540, 340, 30, 30)
 
 
 
@@ -135,12 +164,30 @@ cexit_rect = pygame.Rect(540, 340, 30, 30)
 clock = pygame.time.Clock()
 running = True
 won = False
+lost = False
 
+spawn_wall() #spawns wall
 
 
 
 # Main game loop
 while running:
+
+#respawn wall
+    if not won and not lost:
+
+        wall_hx += wall_vx
+        wall_hy += wall_vy
+
+        # Check if the wall has moved completely off-screen on any side
+        if (wall_hx > SCREEN_WIDTH + 100 or 
+            wall_vx < -wall_width - 100 or 
+            wall_hy > SCREEN_HEIGHT + 100 or 
+            wall_vy < -wall_height - 100):
+            spawn_wall()
+
+
+
 
     # Check for events
     for event in pygame.event.get():
@@ -148,15 +195,6 @@ while running:
             running = False
 
 
-
-
-
-# 2. Update wall position (constant movement to the left)
-    wall_x -= wall_speed
-
-    # Reset wall to the right side if it moves completely off-screen
-    if wall_x < 0:
-        wall_x = 800
 
 
 
@@ -168,7 +206,7 @@ while running:
 
 
     # Draw the wall using pygame.Rect
-    wall_rect = pygame.Rect(wall_x, wall_y, 800, 600)
+    wall_rect = pygame.Rect(wall_vx, wall_vy, 800, 600)
     pygame.draw.rect(screen, (255, 80, 80), wall_rect)  # Red wall
 
 
@@ -176,15 +214,17 @@ while running:
 
    # 1. Create rectangle objects for both the player and the enemy
     player_rect = pygame.Rect(player_x, player_y, 50, 50)
-    tentical_rect = pygame.Rect(wall_x, wall_y + 30, 30, 40)
+    tentical_rect = pygame.Rect(wall_hx, wall_hy, wall_width, wall_height)
 
 
+#dwxsedcwswdsweds random wall
+    pygame.draw.rect(screen, RED, tentical_rect)
 
 
 
     if player_rect.colliderect(tentical_rect):
         #running = False
-        won = True  # Ends the game loop
+        lost = True  # Ends the game loop
 
 
 
@@ -201,32 +241,32 @@ while running:
             player_x -= speed
             player = pygame.Rect(player_x, player_y, player_size, player_size)
 
-            if check_collision(player,walls) == True:
-                player_x += speed
+            #if check_collision(player,walls) == True:
+             #   player_x += speed
 
         # Move right
         if keys[pygame.K_RIGHT]:
             player_x += speed
             player = pygame.Rect(player_x, player_y, player_size, player_size)
 
-            if check_collision(player,walls) == True:
-                player_x -= speed
+            #if check_collision(player,walls) == True:
+             #   player_x -= speed
 
         # Move up
         if keys[pygame.K_UP]:
             player_y -= speed
             player = pygame.Rect(player_x, player_y, player_size, player_size)
 
-            if check_collision(player,walls) == True:
-                player_y += speed
+            #if check_collision(player,walls) == True:
+             #   player_y += speed
 
         # Move down
         if keys[pygame.K_DOWN]:
             player_y += speed
             player = pygame.Rect(player_x, player_y, player_size, player_size)
 
-            if check_collision(player,walls) == True:
-                player_y -= speed
+            #if check_collision(player,walls) == True:
+             #   player_y -= speed
 
 
 
@@ -257,7 +297,8 @@ while running:
         player = pygame.Rect(player_x, player_y, player_size, player_size)
 
 
-
+        if player_rect.colliderect(tentical_rect):
+            lost = True 
 
         # Check if the player reaches the exit
         if player.colliderect(exit_rect):
@@ -267,12 +308,17 @@ while running:
 
 
 # 2. Update wall position (constant movement to the left)
-    wall_x -= wall_speed
+    wall_vx -= wall_speed
 
     # Reset wall to the right side if it moves completely off-screen
-    if wall_x < 0:
-        wall_x = 800
+    if wall_vx < 0:
+        wall_vx = 799
 
+    if wall_vy < 0:
+        wall_vy = 599
+
+    if wall_hx < 0:
+        wall_hx = 799        
 
 
 
@@ -280,17 +326,13 @@ while running:
     # 3. Draw everything
     screen.fill((30, 30, 30))  # Clear screen with dark gray
 
-    # Draw the wall using pygame.Rect
-    wall_rect = pygame.Rect(wall_x, wall_y, 80, 60)
-    pygame.draw.rect(screen, (255, 80, 80), wall_rect)  # Red wall
-
 
 
 
 
     # Draw the maze walls
-    for wall in walls:
-        pygame.draw.rect(screen, BLUE, wall)
+    #for wall in walls:
+     #   pygame.draw.rect(screen, BLUE, wall)
 
     # Draw the exit
     pygame.draw.rect(screen, GREEN, exit_rect)
@@ -303,12 +345,16 @@ while running:
 
 
 
-
     # Display the winning message
+   # Display game status messages
     if won:
         font = pygame.font.SysFont(None, 48)
-        message = font.render("YOU WIN!", True, BLACK)
+        message = font.render("YOU WIN!", True, GREEN)
         screen.blit(message, (220, 180))
+    elif lost:
+        font = pygame.font.SysFont(None, 48)
+        message = font.render("GAME OVER", True, RED)
+        screen.blit(message, (200, 180))
 
 
 
