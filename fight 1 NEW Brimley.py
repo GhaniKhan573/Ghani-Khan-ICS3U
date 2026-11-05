@@ -14,10 +14,17 @@ pygame.display.set_caption("Simple Maze Game")
 # Set up colours
 WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
+YELLOW = (150, 150, 0)
 BLACK = (0, 0, 0)
 BLUE = (50, 150, 255)
 RED = (255, 80, 80)
 BG_COLOR = (30, 30, 30)
+
+font = pygame.font.SysFont("Arial", 30)
+   
+
+
+
 
 # Game state variables
 won = False
@@ -118,11 +125,19 @@ while running:
 
 
 
+#    if player_dmg == 0:
+ #       info = font.render ("[O][O][O]" True, GREEN)
 
+  #  if player_dmg == 1:
+ #       info = font.render ("[O][O][X]" True, YELLOW)
 
+ #   if player_dmg == 2:
+   #     info = font.render ("[O][X][X]" True, RED)
 
+  #  if player_dmg == 3:
+  #      info = font.render ("[X][X][X]" True, RED) 
 
-
+  #  screen.blit(info, (10, 400))
 
     # Get the keys being pressed
     keys = pygame.key.get_pressed()
