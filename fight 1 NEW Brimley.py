@@ -20,7 +20,6 @@ BLUE = (50, 150, 255)
 RED = (255, 80, 80)
 BG_COLOR = (30, 30, 30)
 
-font = pygame.font.SysFont("Arial", 30)
    
 
 
@@ -214,15 +213,19 @@ while running:
     # Display game status messages
 
     if player_dmg == 0:
+        font = pygame.font.SysFont("Arial", 30)
         info = font.render ("[O][O][O]", True, GREEN)
 
     if player_dmg == 1:
+        font = pygame.font.SysFont("Arial", 30)
         info = font.render ("[O][O][X]", True, YELLOW)
 
     if player_dmg == 2:
+        font = pygame.font.SysFont("Arial", 30)
         info = font.render ("[O][X][X]", True, RED)
 
     if player_dmg == 3:
+        font = pygame.font.SysFont("Arial", 30)
         info = font.render ("[X][X][X]", True, RED) 
 
     screen.blit(info, (10, 400))
