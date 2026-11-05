@@ -125,20 +125,6 @@ while running:
 
 
 
-#    if player_dmg == 0:
- #       info = font.render ("[O][O][O]" True, GREEN)
-
-  #  if player_dmg == 1:
- #       info = font.render ("[O][O][X]" True, YELLOW)
-
- #   if player_dmg == 2:
-   #     info = font.render ("[O][X][X]" True, RED)
-
-  #  if player_dmg == 3:
-  #      info = font.render ("[X][X][X]" True, RED) 
-
-  #  screen.blit(info, (10, 400))
-
     # Get the keys being pressed
     keys = pygame.key.get_pressed()
 
@@ -226,6 +212,24 @@ while running:
 
 
     # Display game status messages
+
+    if player_dmg == 0:
+        info = font.render ("[O][O][O]", True, GREEN)
+
+    if player_dmg == 1:
+        info = font.render ("[O][O][X]", True, YELLOW)
+
+    if player_dmg == 2:
+        info = font.render ("[O][X][X]", True, RED)
+
+    if player_dmg == 3:
+        info = font.render ("[X][X][X]", True, RED) 
+
+    screen.blit(info, (10, 400))
+
+
+
+
     if won:
         font = pygame.font.SysFont(None, 48)
         message = font.render("YOU WIN!", True, GREEN)
