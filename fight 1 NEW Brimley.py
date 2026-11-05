@@ -29,19 +29,20 @@ clock = pygame.time.Clock()
 player_x = 30
 player_y = 30
 player_size = 25
-speed = 3
+speed = 6
 
 # Moving Walls variables
 wall_vx = 0  
 wall_vy = 0 
 wall_hx = 300
 wall_hy = 200
-wall_speed = 2  # Pixels to move per frame
+wall_speed = 5  # Pixels to move per frame
 wall_width = 80
 wall_height = 60
 
-# Create the exit
-exit_rect = pygame.Rect(540, 340, 30, 30)
+attack_number = 0
+player_dmg = 0
+dmg_block = False
 
 # Random spawn function for the wall
 def spawn_wall():   
@@ -74,8 +75,19 @@ def spawn_wall():
         wall_vx = -wall_speed
         wall_vy = 0
 
+
+
+
+
 # Spawn the first wall
 spawn_wall()
+
+
+
+
+
+
+
 
 # Main game loop
 while running:
@@ -87,15 +99,30 @@ while running:
 
     # Update wall position if game is active
     if not won and not lost:
-        wall_hx += wall_vx
-        wall_hy += wall_vy
+        if attack_number !=3 or attack_number != 6 or attack_number != 9:
+            wall_hx += wall_vx
+            wall_hy += wall_vy
 
-        # Check if the wall has moved completely off-screen, then respawn
-        if (wall_hx > SCREEN_WIDTH + 100 or 
-            wall_hx < -wall_width - 100 or 
-            wall_hy > SCREEN_HEIGHT + 100 or 
-            wall_hy < -wall_height - 100):
-            spawn_wall()
+        
+            # Check if the wall has moved completely off-screen, then respawn
+            if (wall_hx > SCREEN_WIDTH + 100 or 
+                wall_hx < -wall_width - 100 or 
+                wall_hy > SCREEN_HEIGHT + 100 or 
+                wall_hy < -wall_height - 100):
+                spawn_wall()
+
+                attack_number += 1
+
+        else: dmg_block = True
+        
+
+
+
+
+
+
+
+
 
     # Get the keys being pressed
     keys = pygame.key.get_pressed()
@@ -114,6 +141,10 @@ while running:
         if keys[pygame.K_DOWN]:
             player_y += speed
 
+
+
+
+
         # Keep the player inside the screen
         if player_x < 0:
             player_x = 0
@@ -124,28 +155,60 @@ while running:
         if player_y > SCREEN_HEIGHT - player_size:
             player_y = SCREEN_HEIGHT - player_size
 
+
+
+
     # Update rectangle bounding boxes for collisions
     player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
     tentical_rect = pygame.Rect(wall_hx, wall_hy, wall_width, wall_height)
+    # Create the exit
+    if player_dmg >= 3:
+        exit_rect = pygame.Rect(540, 340, 30, 30)
+
+    if dmg_block == True:
+        dmg_rect = pygame.Rect(500, 300, 30, 30)
+
+
 
     # Check collisions
+    if dmg_block == True:
+        if player_rect.colliderect(tentical_rect):
+            player_dmg += 1
+            dmg_block = False
+
     if player_rect.colliderect(tentical_rect):
         lost = True 
 
-    if player_rect.colliderect(exit_rect):
-        won = True
+    if player_dmg >= 3:
+        if player_rect.colliderect(exit_rect):
+            won = True
+
+    
+
+
 
     # ==================== DRAW EVERYTHING (Done ONCE per frame) ====================
     screen.fill(BG_COLOR)  # Clear screen once with dark gray
 
+
     # Draw the exit
-    pygame.draw.rect(screen, GREEN, exit_rect)
+    if player_dmg >= 3:
+        pygame.draw.rect(screen, GREEN, exit_rect)
+
+    #draw dmg block
+    if dmg_block == True:
+        pygame.draw.rect(screen, RED, dmg_rect)
+
 
     # Draw the moving wall/tentacle
     pygame.draw.rect(screen, RED, tentical_rect)
 
     # Draw the player
     pygame.draw.rect(screen, BLUE, player_rect)
+
+
+
+
 
     # Display game status messages
     if won:
@@ -156,6 +219,8 @@ while running:
         font = pygame.font.SysFont(None, 48)
         message = font.render("GAME OVER", True, RED)
         screen.blit(message, (200, 180))
+
+
 
     # Update the display
     pygame.display.flip()
