@@ -5,19 +5,21 @@ pygame.init()
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
+SIZE = 40
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple Maze Game")
 
 WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
-GRASS_LIGHT = (54, 174, 112)
-GRASS_DARK = (41, 149, 93)
+GRASS_LIGHT = (24, 100, 73)
+GRASS_DARK = (18, 84, 57)
 YELLOW = (150, 150, 0)
 BLACK = (0, 0, 0)
 BLUE = (50, 150, 255)
 RED = (255, 80, 80)
 BG_COLOR = (30, 30, 30)
+ORANGE = (255, 165, 0)
 
 won = False
 lost = False
@@ -137,7 +139,17 @@ while running:
         if player_rect.colliderect(exit_rect):
             won = True
 
-    screen.fill(BG_COLOR)  
+    screen.fill(GRASS_DARK)  
+
+
+    for i in range(0, 800 * 600, SIZE):
+        x_cube = i % 800
+        y_cube = (i // 800) * SIZE
+
+        # Offsets the light squares every other row to create the grid
+        if ((x_cube // SIZE) + (y_cube // SIZE)) % 2 == 1:
+         pygame.draw.rect(screen, GRASS_LIGHT, (x_cube, y_cube, SIZE, SIZE))
+
 
 
 
@@ -156,13 +168,19 @@ while running:
 
 
 
+ 
+
+
+
     font = pygame.font.SysFont("Arial", 24)
     if player_dmg == 0:
-        info = font.render("[O][O][O]", True, GREEN)
+        info = font.render("[O][O][O][0]", True, GREEN)
     elif player_dmg == 1:
-        info = font.render("[O][O][X]", True, YELLOW)
+        info = font.render("[O][O][O]", True, GREEN)        
     elif player_dmg == 2:
-        info = font.render("[O][X][X]", True, RED)
+        info = font.render("[O][O][X]", True, YELLOW)
+    elif player_dmg >= 3 and won == False:
+        info = font.render("[O][X][X]", True, ORANGE)
     else:
         info = font.render("[X][X][X]", True, RED) 
 
