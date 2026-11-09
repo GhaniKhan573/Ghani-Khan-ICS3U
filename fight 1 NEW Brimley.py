@@ -82,7 +82,7 @@ while running:
             running = False
 
     if not won and not lost:
-        if attack_number not in [3, 7, 14, 18]:
+        if attack_number not in [3, 7, 14, 20]:
             wall_hx += wall_vx
             wall_hy += wall_vy
 
@@ -93,7 +93,7 @@ while running:
                 spawn_wall()
                 attack_number += 1
 
-        elif attack_number >= 18:
+        elif attack_number >= 20:
             player_dmg += 1 
 
         else: 
