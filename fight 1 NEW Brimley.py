@@ -5,7 +5,7 @@ pygame.init()
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
-SIZE = 40
+SIZE = 20
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple Maze Game")
@@ -14,7 +14,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 GRASS_LIGHT = (24, 100, 73)
 GRASS_DARK = (18, 84, 57)
-YELLOW = (150, 150, 0)
+YELLOW = (250, 250, 0)
 BLACK = (0, 0, 0)
 BLUE = (50, 150, 255)
 RED = (255, 80, 80)
@@ -29,7 +29,7 @@ clock = pygame.time.Clock()
 player_x = 30
 player_y = 30
 player_size = 25
-speed = 8
+speed = 6
 
 wall_vx = 0  
 wall_vy = 0 
@@ -42,9 +42,16 @@ wall_height = 60
 attack_number = 0
 player_dmg = 0
 dmg_block = False
+speed_block = False
+
+speed_x = random.randint (10-400)
+speed_y = random.randint (10-600)
+
 
 exit_rect = pygame.Rect(540, 340, 30, 30)
 dmg_rect = pygame.Rect(500, 300, 30, 30)
+speed_rect = pygame.Rect(speed_x, speed_y, 30, 30)
+
 
 def spawn_wall():   
     global wall_hx, wall_hy, wall_vx, wall_vy
@@ -85,6 +92,7 @@ while running:
 
     if not won and not lost:
         if attack_number not in [3, 7, 14, 20]:
+
             wall_hx += wall_vx
             wall_hy += wall_vy
 
@@ -94,6 +102,10 @@ while running:
                 wall_hy < -wall_height - 100):
                 spawn_wall()
                 attack_number += 1
+                power = random.randint (0,3)
+                if power == 0:
+                    speed_block = True
+
 
         elif attack_number >= 20:
             player_dmg += 1 
@@ -132,8 +144,14 @@ while running:
             wall_speed += 1
             dmg_block = False
 
+        
     if player_rect.colliderect(tentical_rect):
         lost = True 
+
+    if speed_block == True:
+        if player_rect.colliderect(speed_rect):
+            speed += 1 
+            speed_block = False
 
     if player_dmg >= 4:
         if player_rect.colliderect(exit_rect):
@@ -161,7 +179,11 @@ while running:
     if dmg_block:
         pygame.draw.rect(screen, RED, dmg_rect)
 
-    pygame.draw.rect(screen, RED, tentical_rect)
+    if speed_block == True:
+        pygame.draw.rect(screen, ORANGE, speed_rect)
+
+
+    pygame.draw.rect(screen, YELLOW, tentical_rect)
 
     pygame.draw.rect(screen, BLUE, player_rect)
 
