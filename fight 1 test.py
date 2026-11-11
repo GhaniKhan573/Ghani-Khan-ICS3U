@@ -7,6 +7,9 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
 SIZE = 40
 
+
+player_image = pygame.image.load("alive heart.png")
+player_image = pygame.transform.scale(player_image, (30, 30)) #You had this in your loop which was loading the photo each time
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple Maze Game")
 
@@ -181,12 +184,11 @@ while running:
 
     pygame.draw.rect(screen, YELLOW, tentical_rect)
 
-    player_image = pygame.image.load("alive heart.png")
-    player_image = pygame.transform.scale(30, 30)
 
     player_rect = player_image.get_rect()
     player_rect.topleft = (player_x, player_y)
 
+    screen.blit(player_image, player_rect)
 
 
 

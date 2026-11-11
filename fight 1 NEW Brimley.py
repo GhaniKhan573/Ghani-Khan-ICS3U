@@ -7,6 +7,7 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
 SIZE = 40
 
+
 player_image = pygame.image.load("alive heart.png")
 player_image = pygame.transform.scale(player_image, (30, 30)) #You had this in your loop which was loading the photo each time
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -16,7 +17,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 GRASS_LIGHT = (24, 100, 73)
 GRASS_DARK = (18, 84, 57)
-YELLOW = (150, 150, 0)
+YELLOW = (250, 250, 0)
 BLACK = (0, 0, 0)
 BLUE = (50, 150, 255)
 RED = (255, 80, 80)
@@ -31,7 +32,7 @@ clock = pygame.time.Clock()
 player_x = 30
 player_y = 30
 player_size = 25
-speed = 6
+speed = 5
 
 wall_vx = 0  
 wall_vy = 0 
@@ -105,9 +106,8 @@ while running:
                     speed_block = True
 
 
-        elif attack_number == 20: #Greater than 20 was causing the game to freeze, so I changed it to equal 20
+        elif attack_number >= 20:
             player_dmg += 1 
-            attack_number += 1 #Added this line to prevent the game from freezing when attack_number is 20
 
         else: 
             dmg_block = True
@@ -159,12 +159,13 @@ while running:
     screen.fill(GRASS_DARK)  
 
 
-    for i in range(0, SCREEN_WIDTH * SCREEN_HEIGHT, SIZE): #Fixed your drawing
-        x_cube = (i // SIZE) % (SCREEN_WIDTH // SIZE) * SIZE
-        y_cube = (i // SCREEN_WIDTH) * SIZE
+    for i in range(0, 800 * 600, SIZE):
+        x_cube = i % 800
+        y_cube = (i // 800) * SIZE
 
-    if ((x_cube // SIZE) + (y_cube // SIZE)) % 2 == 1:
-        pygame.draw.rect(screen, GRASS_LIGHT, (x_cube, y_cube, SIZE, SIZE))
+        # Offsets the light squares every other row to create the grid
+        if ((x_cube // SIZE) + (y_cube // SIZE)) % 2 == 1:
+         pygame.draw.rect(screen, GRASS_LIGHT, (x_cube, y_cube, SIZE, SIZE))
 
 
 
@@ -183,13 +184,11 @@ while running:
 
     pygame.draw.rect(screen, YELLOW, tentical_rect)
 
-    
 
     player_rect = player_image.get_rect()
     player_rect.topleft = (player_x, player_y)
 
     screen.blit(player_image, player_rect)
-
 
 
 
