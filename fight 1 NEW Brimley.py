@@ -5,8 +5,10 @@ pygame.init()
 
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
-SIZE = 20
+SIZE = 40
 
+player_image = pygame.image.load("alive heart.png")
+player_image = pygame.transform.scale(player_image, (30, 30)) #You had this in your loop which was loading the photo each time
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple Maze Game")
 
@@ -14,7 +16,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 GRASS_LIGHT = (24, 100, 73)
 GRASS_DARK = (18, 84, 57)
-YELLOW = (250, 250, 0)
+YELLOW = (150, 150, 0)
 BLACK = (0, 0, 0)
 BLUE = (50, 150, 255)
 RED = (255, 80, 80)
@@ -44,13 +46,9 @@ player_dmg = 0
 dmg_block = False
 speed_block = False
 
-speed_x = random.randint (10-400)
-speed_y = random.randint (10-600)
-
-
 exit_rect = pygame.Rect(540, 340, 30, 30)
 dmg_rect = pygame.Rect(500, 300, 30, 30)
-speed_rect = pygame.Rect(speed_x, speed_y, 30, 30)
+speed_rect = pygame.Rect(200, 300, 30, 30)
 
 
 def spawn_wall():   
@@ -102,13 +100,14 @@ while running:
                 wall_hy < -wall_height - 100):
                 spawn_wall()
                 attack_number += 1
-                power = random.randint (0,3)
+                power = random.randint (0,11)
                 if power == 0:
                     speed_block = True
 
 
-        elif attack_number >= 20:
+        elif attack_number == 20: #Greater than 20 was causing the game to freeze, so I changed it to equal 20
             player_dmg += 1 
+            attack_number += 1 #Added this line to prevent the game from freezing when attack_number is 20
 
         else: 
             dmg_block = True
@@ -160,13 +159,12 @@ while running:
     screen.fill(GRASS_DARK)  
 
 
-    for i in range(0, 800 * 600, SIZE):
-        x_cube = i % 800
-        y_cube = (i // 800) * SIZE
+    for i in range(0, SCREEN_WIDTH * SCREEN_HEIGHT, SIZE): #Fixed your drawing
+        x_cube = (i // SIZE) % (SCREEN_WIDTH // SIZE) * SIZE
+        y_cube = (i // SCREEN_WIDTH) * SIZE
 
-        # Offsets the light squares every other row to create the grid
-        if ((x_cube // SIZE) + (y_cube // SIZE)) % 2 == 1:
-         pygame.draw.rect(screen, GRASS_LIGHT, (x_cube, y_cube, SIZE, SIZE))
+    if ((x_cube // SIZE) + (y_cube // SIZE)) % 2 == 1:
+        pygame.draw.rect(screen, GRASS_LIGHT, (x_cube, y_cube, SIZE, SIZE))
 
 
 
@@ -185,7 +183,13 @@ while running:
 
     pygame.draw.rect(screen, YELLOW, tentical_rect)
 
-    pygame.draw.rect(screen, BLUE, player_rect)
+    
+
+    player_rect = player_image.get_rect()
+    player_rect.topleft = (player_x, player_y)
+
+    screen.blit(player_image, player_rect)
+
 
 
 
