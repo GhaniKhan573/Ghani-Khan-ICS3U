@@ -8,21 +8,33 @@ SCREEN_HEIGHT = 400
 SIZE = 40
 
 
+attack_image = pygame.image.load("attack.png")
+attack_image = pygame.transform.scale(attack_image, (40, 40))
+
+speed_image = pygame.image.load("speed.png")
+speed_image = pygame.transform.scale(speed_image, (50, 50))
+
+monster_image = pygame.image.load("monster.png")
+monster_image = pygame.transform.scale(monster_image, (95, 70))
+
 player_image = pygame.image.load("alive heart.png")
 player_image = pygame.transform.scale(player_image, (30, 30)) #You had this in your loop which was loading the photo each time
+
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simple Maze Game")
 
 WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
-GRASS_LIGHT = (24, 100, 73)
-GRASS_DARK = (18, 84, 57)
+GRASS_LIGHT = (24, 73, 100)
+GRASS_DARK = (18, 57, 84)
 YELLOW = (250, 250, 0)
 BLACK = (0, 0, 0)
 BLUE = (50, 150, 255)
 RED = (255, 80, 80)
 BG_COLOR = (30, 30, 30)
 ORANGE = (255, 165, 0)
+HITBOX = (150, 150, 50)
+
 
 won = False
 lost = False
@@ -42,6 +54,9 @@ wall_speed = 5
 wall_width = 80
 wall_height = 60
 
+speed_x = 300
+speed_y = 200
+
 attack_number = 0
 player_dmg = 0
 dmg_block = False
@@ -49,7 +64,7 @@ speed_block = False
 
 exit_rect = pygame.Rect(540, 340, 30, 30)
 dmg_rect = pygame.Rect(500, 300, 30, 30)
-speed_rect = pygame.Rect(200, 300, 30, 30)
+speed_rect = pygame.Rect(speed_x, speed_y, 30, 30)
 
 
 def spawn_wall():   
@@ -101,8 +116,10 @@ while running:
                 wall_hy < -wall_height - 100):
                 spawn_wall()
                 attack_number += 1
-                power = random.randint (0,11)
+                power = random.randint (0,1)
                 if power == 0:
+                    speed_x = random.randint (100,500)
+                    speed_y = random.randint (100,300)
                     speed_block = True
 
 
@@ -133,6 +150,11 @@ while running:
         if player_y > SCREEN_HEIGHT - player_size:
             player_y = SCREEN_HEIGHT - player_size
 
+
+#all my collision rectangle are made here
+    exit_rect = pygame.Rect(540, 340, 30, 30)
+    dmg_rect = pygame.Rect(500, 300, 30, 30)
+    speed_rect = pygame.Rect(speed_x, speed_y, 30, 30)
     player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
     tentical_rect = pygame.Rect(wall_hx, wall_hy, wall_width, wall_height)
 
@@ -182,9 +204,34 @@ while running:
         pygame.draw.rect(screen, ORANGE, speed_rect)
 
 
-    pygame.draw.rect(screen, YELLOW, tentical_rect)
+    pygame.draw.rect(screen, HITBOX, tentical_rect)
 
 
+
+
+#power imaging
+    if dmg_block == True:
+        dmg_rect = player_image.get_rect()
+        dmg_rect.topleft = (495,295)
+
+        screen.blit(attack_image, dmg_rect)
+
+#power imaging
+    if speed_block == True:
+        speed_rect = player_image.get_rect()
+        speed_rect.topleft = (speed_x - 10, speed_y - 10)
+
+        screen.blit(speed_image, speed_rect)
+
+
+#monster imaging
+    tentical_rect = player_image.get_rect()
+    tentical_rect.topleft = (wall_hx - 10, wall_hy - 10)
+
+    screen.blit(monster_image, tentical_rect)
+
+
+#player imaging
     player_rect = player_image.get_rect()
     player_rect.topleft = (player_x, player_y)
 
