@@ -1,10 +1,53 @@
 import pygame
 import random
 import time
+
+
+
+
+def spawn_wall():   
+    global wall_hx, wall_hy, wall_vx, wall_vy
+ 
+    side = random.randint(0, 3)
+    
+    if side == 0:  
+        wall_hx = random.randint(0, SCREEN_WIDTH - wall_width)
+        wall_hy = -wall_height 
+        wall_vx = 0
+        wall_vy = wall_speed
+        
+    elif side == 1:  
+        wall_hx = random.randint(0, SCREEN_WIDTH - wall_width)
+        wall_hy = SCREEN_HEIGHT 
+        wall_vx = 0
+        wall_vy = -wall_speed
+        
+    elif side == 2:  
+        wall_hx = -wall_width  
+        wall_hy = random.randint(0, SCREEN_HEIGHT - wall_height)
+        wall_vx = wall_speed
+        wall_vy = 0
+        
+    elif side == 3:  
+        wall_hx = SCREEN_WIDTH 
+        wall_hy = random.randint(0, SCREEN_HEIGHT - wall_height)
+        wall_vx = -wall_speed
+        wall_vy = 0
+
+
+
+def check_collision(player_rect, walls):
+    
+    for wall in walls:
+        if player_rect.colliderect(wall):
+            return True
+    return False
+
+
 pygame.init()
 pygame.mixer.init()
 
-pygame.mixer.music.load("music.mp3")
+pygame.mixer.music.load("seabattle1.mp3")
 pygame.mixer.music.play(-1)
 pygame.init()
 
@@ -87,35 +130,6 @@ dmg_rect = pygame.Rect(500, 300, 30, 30)
 speed_rect = pygame.Rect(speed_x, speed_y, 30, 30)
 
 
-def spawn_wall():   
-    global wall_hx, wall_hy, wall_vx, wall_vy
- 
-    side = random.randint(0, 3)
-    
-    if side == 0:  
-        wall_hx = random.randint(0, SCREEN_WIDTH - wall_width)
-        wall_hy = -wall_height 
-        wall_vx = 0
-        wall_vy = wall_speed
-        
-    elif side == 1:  
-        wall_hx = random.randint(0, SCREEN_WIDTH - wall_width)
-        wall_hy = SCREEN_HEIGHT 
-        wall_vx = 0
-        wall_vy = -wall_speed
-        
-    elif side == 2:  
-        wall_hx = -wall_width  
-        wall_hy = random.randint(0, SCREEN_HEIGHT - wall_height)
-        wall_vx = wall_speed
-        wall_vy = 0
-        
-    elif side == 3:  
-        wall_hx = SCREEN_WIDTH 
-        wall_hy = random.randint(0, SCREEN_HEIGHT - wall_height)
-        wall_vx = -wall_speed
-        wall_vy = 0
-
 
 
 
@@ -147,7 +161,7 @@ while running:
                 wall_hy < -wall_height - 100):
                 spawn_wall()
                 attack_number += 1
-                power = random.randint (0,1)
+                power = random.randint (0,5)
                 if power == 0:
                     speed_x = random.randint (100,500)
                     speed_y = random.randint (100,300)
@@ -165,12 +179,31 @@ while running:
     if not won and not lost:
         if keys[pygame.K_LEFT]:
             player_x -= speed
+            player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
+
+            if check_collision(player_rect,walls) == True:
+                player_x += speed 
+
         if keys[pygame.K_RIGHT]:
             player_x += speed
+            player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
+            if check_collision(player_rect,walls) == True:
+                player_x -= speed 
+
         if keys[pygame.K_UP]:
             player_y -= speed
+            player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
+            if check_collision(player_rect,walls) == True:
+                player_y += speed 
+
+
         if keys[pygame.K_DOWN]:
             player_y += speed
+            player_rect = pygame.Rect(player_x, player_y, player_size, player_size)
+            if check_collision(player_rect,walls) == True:
+                player_y -= speed 
+
+
 
         if player_x < 0:
             player_x = 0
@@ -183,6 +216,15 @@ while running:
 
 
 #all my collision rectangle are made here
+    walls = [
+        pygame.Rect(100, 0, 20, 300),
+        pygame.Rect(200, 100, 20, 300),
+        pygame.Rect(300, 0, 20, 250),
+        pygame.Rect(400, 100, 20, 300),
+        pygame.Rect(500, 0, 20, 250)
+    ]
+
+
     exit_rect = pygame.Rect(540, 340, 30, 30)
     seeweed_rect = pygame.Rect(80, 120, 40, 40)
 
@@ -231,19 +273,6 @@ while running:
 
 
 
-#showes hitboxes
-
-    #    if player_dmg >= 4:
-    #        pygame.draw.rect(screen, GREEN, exit_rect)
-#
-    #    if dmg_block:
-#            pygame.draw.rect(screen, HITBOX, dmg_rect)
-#
-    #    if speed_block == True:
-#            pygame.draw.rect(screen, HITBOX, speed_rect)
-#
-#
-#        pygame.draw.rect(screen, HITBOX, tentical_rect)
 
 
 #Final attack imaging
@@ -280,6 +309,10 @@ while running:
     player_rect.topleft = (player_x, player_y)
 
     screen.blit(player_image, player_rect)
+
+    for wall in walls:
+        pygame.draw.rect(screen, BLUE, wall)
+
 
 #Seeweed
 
@@ -355,82 +388,7 @@ while running:
 
 
     pygame.display.flip()
-    clock.tick(60)
-
-
-
-
-
-
-
-
-
-
-"""
-
-
-
-#game
-
-if p_pos == 1:
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    clock.tick(45)
 
 
 
