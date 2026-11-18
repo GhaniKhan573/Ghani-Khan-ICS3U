@@ -217,11 +217,8 @@ while running:
 
 #all my collision rectangle are made here
     walls = [
-        pygame.Rect(100, 0, 20, 300),
-        pygame.Rect(200, 100, 20, 300),
-        pygame.Rect(300, 0, 20, 250),
-        pygame.Rect(400, 100, 20, 300),
-        pygame.Rect(500, 0, 20, 250)
+        pygame.Rect(200, 200, 20, 30),
+        pygame.Rect(300, 200, 20, 30),
     ]
 
 
@@ -379,8 +376,6 @@ while running:
         win_font = pygame.font.SysFont(None, 48)
         message = win_font.render("YOU WIN!", True, GREEN)
         screen.blit(message, (220, 180))
-        time.sleep(5)
-        p_pos = 2
     elif lost:
         lose_font = pygame.font.SysFont(None, 48)
         message = lose_font.render("GAME OVER RESTART", True, RED)
